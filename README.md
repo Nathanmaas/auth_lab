@@ -1,7 +1,6 @@
 #AUTH LAB
 
 Time to implement authentication...and ... Go!
-
 ##App setup
 
 * pull latest notes repo
@@ -26,3 +25,4 @@ Time to implement authentication...and ... Go!
 * **middleware / session** - create a middleware that loads the current user and attaches it to req.
 
 * **Everyone** - Use the req.currentUser information to deny the user access to the /restricted page.
+
