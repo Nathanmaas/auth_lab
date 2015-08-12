@@ -5,7 +5,10 @@ var router = express.Router();
 //GET /
 //home page of site
 router.get('/',function(req,res){
-    res.render('main/index',{currentUser:req.currentUser});
+  console.log('flash',req.flash());
+  console.log('flash',req.flash());
+    res.render('main/index');
+      // ,{currentUser:req.currentUser});
 });
 
 //GET /restricted
@@ -14,6 +17,7 @@ router.get('/restricted',function(req,res){
   if(req.currentUser){
     res.render('main/restricted');
   }else{
+    req.fash('danger', 'Access Denied');
     res.redirect('/');
   }
 });

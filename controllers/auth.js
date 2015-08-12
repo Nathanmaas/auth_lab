@@ -17,9 +17,11 @@ router.post('/login',function(req,res){
         res.send(err);
       }else if(user){
         req.session.user = user.id;
+        req.flash('success','you are logged in');
         res.redirect('/');
       }else{
-        res.send('invalid username or password');
+        req.flash('danger','you are not logged in');
+        res.redirect('/auth/login');
       }
 
     });
@@ -37,6 +39,8 @@ router.get('/signup',function(req,res){
 router.post('/signup',function(req,res){
       if(req.body.password != req.body.password2){
       res.send("passwords must match");
+      req.flash('danger');
+      res.redirect('/auth/signup');
       }else{
         db.user.findOrCreate({
           where:{email: req.body.email
@@ -53,19 +57,22 @@ router.post('/signup',function(req,res){
         res.send('A user with that email address already exists');
       }
       }).catch(function(err){
-        res.send(err);
-      });
+        if(err.message){
+          req.flash('danger',err.message);
+        }else{
+          req.flash('danger', 'unknown error');
+          console.log(err);
+        }
+          res.redirect('/auth/signup');
+      })
     }
 
-    //do sign up here (add user to database)
-
-    //user is signed up forward them to the home page
-    // res.redirect('/');
 });
 
 //GET /auth/logout
 //logout logged in user
 router.get('/logout',function(req,res){
+  req.flash('info', 'You have been logged out');
     req.session.user = false;
     res.redirect('/');
 });

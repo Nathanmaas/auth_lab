@@ -2,7 +2,7 @@ var db = require('./models');
 var express = require('express');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-
+var flash = require('connect-flash');
 //configure express
 var app = express();
 app.set('view engine','ejs');
@@ -15,7 +15,12 @@ app.use(session({
   resave: false,
   saveOnUnintialized: true
 }));
+app.use(flash());
+
+
 app.use(function(req,res,next){
+  // this is where you keep your user so node doesnt default you out when server reloads
+  // req.session.user = 8;
   if(req.session.user){
     db.user.findById(req.session.user).then(function(user){
       req.currentUser = user;
@@ -26,6 +31,14 @@ app.use(function(req,res,next){
     next();
   }
 });
+
+
+app.use(function(req,res,next){
+  res.locals.currentUser = req.currentUser;
+  res.locals.alerts = req.flash();
+  next();
+});
+
 
 //load routes
 app.use('/',require('./controllers/main.js'));
